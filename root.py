@@ -113,7 +113,7 @@ def texting(row):
     vacancies = res.json()  
     main_list.append(vacancies)
     m = main_list[0]['description']
-    text = BeautifulSoup(m, "lxml").text
+    text = BeautifulSoup(m, " ").text
     text = re.sub(r'\|\|\|\|\\', r' ', text) 
     text = re.sub(r'http\S+', r'<URL>', text)
     text = re.sub(r'\r', r' ', text)
@@ -127,4 +127,4 @@ def texting(row):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
