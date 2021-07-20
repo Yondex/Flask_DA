@@ -50,11 +50,14 @@ def cleaner():
             lemmas = mystem.lemmatize(text)
             
         dicts[k1] = ''.join(lemmas)
+    
     return dicts #render_template('index.html', message=dicts) 
 
 @app.route('/submit', methods=['post'])
 def cosinus():
-    dicts = cleaner()
+    with open('dicts.pickle', 'rb') as f:
+        data = pickle.load(f)
+    dicts = data
     text = request.form.get('text').lower()
     
     df = pd.concat({k: pd.Series(v) for k, v in dicts.items()}).reset_index()
@@ -71,9 +74,7 @@ def cosinus():
     df['cos_similarities'] = cosine_similarities
     # и отсортируем по убыванию (т.к. cos(0)=1)
     df = df.sort_values(by=['cos_similarities'], ascending=[0])
-    #for index, row in df[0:10].iterrows():
-    #    print( row[['id_vac','cos_similarities', 'descriptions'  ]])
-    
+ 
     dictionary, bow_corpus, word_counts= corpus(dicts, text)
    
     for index, row in df[0:10].iterrows():
@@ -81,8 +82,7 @@ def cosinus():
         df.loc[df['id_vac']==str(id_v), 'description'] = desc
 
     return render_template('main.html',   tables=[df[0:10].to_html(classes='data', header="true")], message = [ dictionary, bow_corpus, word_counts])
-    #return render_template('index.html',  message =[ dictionary, bow_corpus[:2], word_counts[:2], tables=[df[0:10].to_html(classes='data', header="true")]])
-
+   
 
 def corpus(dicts, text):
     processed_corpus  = []
@@ -113,7 +113,7 @@ def texting(row):
     vacancies = res.json()  
     main_list.append(vacancies)
     m = main_list[0]['description']
-    text = BeautifulSoup(m, " ").text
+    text = BeautifulSoup(m, "lxml").text
     text = re.sub(r'\|\|\|\|\\', r' ', text) 
     text = re.sub(r'http\S+', r'<URL>', text)
     text = re.sub(r'\r', r' ', text)
