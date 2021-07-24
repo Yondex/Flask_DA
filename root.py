@@ -28,7 +28,7 @@ def cleaner():
         if k['description'] != 'Not Found':
             k1 = k['id']
             text = k['description'].lower() 
-            text = BeautifulSoup(text, "lxml").text
+            text = BeautifulSoup(text).text
             text = re.sub(r'\|\|\|\|\\', r' ', text) 
             text = re.sub(r'http\S+', r'<URL>', text)
             text = re.sub(r'\r', r' ', text)
@@ -87,7 +87,7 @@ def texting(row):
     vacancies = res.json()  
     main_list.append(vacancies)
     m = main_list[0]['description']
-    text = BeautifulSoup(m, "lxml").text
+    text = BeautifulSoup(m).text
     text = re.sub(r'\|\|\|\|\\', r' ', text) 
     text = re.sub(r'http\S+', r'<URL>', text)
     text = re.sub(r'\r', r' ', text)
