@@ -6,7 +6,7 @@ WORKDIR /home/app
 COPY  . /home/app
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 5000
 ENTRYPOINT [ "python3", "root.py"]
 
 #CMD ['runserver', '0.0.0.0:8080']
